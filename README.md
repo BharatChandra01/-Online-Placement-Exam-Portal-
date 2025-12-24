@@ -5,3 +5,8 @@ Modern UI/UX: You designed a professional dashboard with company-specific cards 
 Dynamic Logic: You created a results engine that calculates scores, percentages, and PASS/FAIL status in real-time.
 Version Control: You learned how to use Git and GitHub to host your project online.
 <img width="1730" height="839" alt="Screenshot 2025-12-24 152115" src="https://github.com/user-attachments/assets/f292aaf1-f941-4ab9-aff5-c0fc0b467699" />
+<img width="1893" height="868" alt="Screenshot 2025-12-24 152204" src="https://github.com/user-attachments/assets/80d29509-71a0-40f0-a6b3-cc8b7219fa1e" />
+<img width="1893" height="868" alt="Screenshot 2025-12-24 152204" src="https://github.com/user-attachments/assets/98063fdb-2ace-45d5-aed4-540db5ad6462" /><img width="1800" height="873" alt="Screenshot 2025-12-24 152304" src="https://github.com/user-attachments/assets/9e23f716-f542-44f2-ac87-d196dec9d813" />
+
+
+
