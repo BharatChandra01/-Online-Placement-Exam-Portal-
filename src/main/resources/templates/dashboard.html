@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Placement Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; padding: 10px; }
+        
+        .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #eee; transition: transform 0.2s; text-align: left; }
+        .card:hover { transform: translateY(-5px); }
+        
+        .icon-box { width: 50px; height: 50px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; margin-bottom: 20px; font-size: 24px; }
+        .bg-tcs { background-color: #2b59ff; }
+        .bg-google { background-color: #ea4335; }
+        .bg-amazon { background-color: #ff9900; }
+        .bg-hcl { background-color: #005696; }
+        .bg-capgemini { background-color: #0070ad; }
+
+        .card-title { font-size: 1.8rem; font-weight: 700; color: #333; margin-bottom: 15px; }
+        
+        .details-grid { display: flex; gap: 20px; margin-top: 10px; border-top: 1px solid #f0f0f0; padding-top: 15px; }
+        .detail-item { display: flex; align-items: center; font-size: 0.9rem; color: #666; font-weight: 600; }
+        .detail-item i { margin-right: 8px; color: #800000; }
+        
+        .start-btn { display: block; width: 100%; padding: 12px; margin-top: 25px; border: none; border-radius: 6px; background: #2b59ff; color: white; font-weight: 600; cursor: pointer; text-decoration: none; text-align: center; }
+        .start-btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h2 style="margin:0; color: #800000;">GBC University Exam Portal</h2>
+            <span style="color: #666;">Welcome, <b th:text="${session.user.fullName}">Student</b></span>
+        </div>
+        <a href="/logout" style="text-decoration: none; color: #ea4335; font-weight: bold;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="grid-container">
+        <!-- TCS Card -->
+        <div class="card">
+            <div class="icon-box bg-tcs"><i class="fas fa-book-open"></i></div>
+            <div class="card-title">TCS</div>
+            <div class="details-grid">
+                <div class="detail-item"><i class="fas fa-list-ol"></i> 10 Qns</div>
+                <div class="detail-item"><i class="fas fa-clock"></i> 10 Mins</div>
+            </div>
+            <a th:href="@{/exam/TCS}" class="start-btn">Start Mock Test</a>
+        </div>
+
+        <!-- Google Card -->
+        <div class="card">
+            <div class="icon-box bg-google"><i class="fab fa-google"></i></div>
+            <div class="card-title">Google</div>
+            <div class="details-grid">
+                <div class="detail-item"><i class="fas fa-list-ol"></i> 10 Qns</div>
+                <div class="detail-item"><i class="fas fa-clock"></i> 10 Mins</div>
+            </div>
+            <a th:href="@{/exam/Google}" class="start-btn" style="background: #ea4335;">Start Google Exam</a>
+        </div>
+
+        <!-- Amazon Card -->
+        <div class="card">
+            <div class="icon-box bg-amazon"><i class="fab fa-amazon"></i></div>
+            <div class="card-title">Amazon</div>
+            <div class="details-grid">
+                <div class="detail-item"><i class="fas fa-list-ol"></i> 10 Qns</div>
+                <div class="detail-item"><i class="fas fa-clock"></i> 10 Mins</div>
+            </div>
+            <a th:href="@{/exam/Amazon}" class="start-btn" style="background: #ff9900;">Start Amazon Exam</a>
+        </div>
+
+        <!-- HCL Card -->
+        <div class="card">
+            <div class="icon-box bg-hcl"><i class="fas fa-code"></i></div>
+            <div class="card-title">HCL</div>
+            <div class="details-grid">
+                <div class="detail-item"><i class="fas fa-list-ol"></i> 10 Qns</div>
+                <div class="detail-item"><i class="fas fa-clock"></i> 10 Mins</div>
+            </div>
+            <a th:href="@{/exam/HCL}" class="start-btn" style="background: #005696;">Start HCL Exam</a>
+        </div>
+
+        <!-- Capgemini Card -->
+        <div class="card">
+            <div class="icon-box bg-capgemini"><i class="fas fa-building"></i></div>
+            <div class="card-title">Capgemini</div>
+            <div class="details-grid">
+                <div class="detail-item"><i class="fas fa-list-ol"></i> 10 Qns</div>
+                <div class="detail-item"><i class="fas fa-clock"></i> 10 Mins</div>
+            </div>
+            <a th:href="@{/exam/Capgemini}" class="start-btn" style="background: #0070ad;">Start Capgemini Exam</a>
+        </div>
+    </div>
+
+</body>
+</html>

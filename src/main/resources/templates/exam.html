@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam - GBC University</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; }
+        
+        /* Professional Header */
+        .header { background: #800000; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .timer-box { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 5px; font-size: 20px; font-weight: bold; }
+
+        .main-layout { display: flex; flex: 1; overflow: hidden; }
+
+        /* Left Side: Question Content */
+        .content-area { flex: 3; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 700px; }
+        
+        .q-slide { display: none; background: white; padding: 35px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 5px solid #2b59ff; }
+        .q-slide.active { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        .q-header { font-size: 13px; color: #777; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        .q-text { font-size: 20px; font-weight: 600; color: #222; margin-bottom: 25px; line-height: 1.5; }
+        
+        /* Option Boxes */
+        .option { display: block; padding: 15px; margin: 10px 0; background: #fff; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 17px; }
+        .option:hover { background: #f8f9fa; border-color: #2b59ff; }
+        .option.selected { background: #e8f0fe; border-color: #2b59ff; }
+        .option input { margin-right: 15px; transform: scale(1.3); }
+
+        /* Right Side: Question Navigator Palette */
+        .sidebar { flex: 1; background: white; border-left: 1px solid #ddd; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
+        .num-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #ccc; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; }
+        .num-btn.answered { background: #2e7d32; color: white; border-color: #2e7d32; }
+        .num-btn.active { border: 2px solid #2b59ff; transform: scale(1.1); }
+
+        /* Footer Buttons */
+        .nav-footer { display: flex; justify-content: space-between; margin-top: 30px; width: 100%; max-width: 700px; }
+        .btn { padding: 12px 25px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-prev { background: #6c757d; color: white; visibility: hidden; }
+        .btn-next { background: #2b59ff; color: white; }
+        .btn-submit { background: #2e7d32; color: white; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div><i class="fas fa-university"></i> <span th:text="${category} + ' Exam'"></span></div>
+        <div class="timer-box"><i class="fas fa-clock"></i> <span id="timer">10:00</span></div>
+    </div>
+
+    <div class="main-layout">
+        <div class="content-area">
+            <div class="container">
+                <form id="examForm" th:action="@{/submit-exam}" method="post">
+                    <input type="hidden" name="category" th:value="${category}">
+
+                    <div th:each="q, i : ${questions}" class="q-slide" th:classappend="${i.index == 0} ? 'active' : ''" th:id="'q-' + ${i.index}">
+                        <div class="q-header">
+                            <span>QUESTION <span th:text="${i.index + 1}"></span></span>
+                            <span th:text="${i.index + 1} + ' / ' + ${questions.size()}"></span>
+                        </div>
+                        <div class="q-text" th:text="${q.questionText}"></div>
+                        
+                        <label class="option" onclick="markAsAnswered(this)">
+                            <input type="radio" th:name="'question_' + ${q.id}" value="1"> <span th:text="${q.option1}"></span>
+                        </label>
+                        <label class="option" onclick="markAsAnswered(this)">
+                            <input type="radio" th:name="'question_' + ${q.id}" value="2"> <span th:text="${q.option2}"></span>
+                        </label>
+                        <label class="option" onclick="markAsAnswered(this)">
+                            <input type="radio" th:name="'question_' + ${q.id}" value="3"> <span th:text="${q.option3}"></span>
+                        </label>
+                        <label class="option" onclick="markAsAnswered(this)">
+                            <input type="radio" th:name="'question_' + ${q.id}" value="4"> <span th:text="${q.option4}"></span>
+                        </label>
+                    </div>
+
+                    <div class="nav-footer">
+                        <button type="button" class="btn btn-prev" id="prevBtn" onclick="changeQuestion(-1)"><i class="fas fa-chevron-left"></i> Previous</button>
+                        <button type="button" class="btn btn-next" id="nextBtn" onclick="changeQuestion(1)">Next <i class="fas fa-chevron-right"></i></button>
+                        <button type="button" class="btn btn-submit" id="submitBtn" onclick="confirmSubmit()">Finish & Submit <i class="fas fa-check-circle"></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <h4 style="margin: 0; color: #555;">Question Palette</h4>
+            <div class="palette-grid">
+                <button type="button" th:each="q, i : ${questions}" 
+                        th:id="'btn-' + ${i.index}" class="num-btn" 
+                        th:classappend="${i.index == 0} ? 'active' : ''"
+                        th:text="${i.index + 1}" th:onclick="'jumpTo(' + ${i.index} + ')'"></button>
+            </div>
+            <div style="margin-top: 30px; font-size: 12px; color: #777;">
+                <div style="margin-bottom: 5px;"><span style="display:inline-block; width:12px; height:12px; background:#2e7d32; border-radius:50%;"></span> Answered</div>
+                <div><span style="display:inline-block; width:12px; height:12px; background:white; border:1px solid #ccc; border-radius:50%;"></span> Not Answered</div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        let currentIdx = 0;
+        const totalQuestions = [[${questions.size()}]];
+        
+        function changeQuestion(step) {
+            hideQuestion(currentIdx);
+            currentIdx += step;
+            showQuestion(currentIdx);
+        }
+
+        function jumpTo(idx) {
+            hideQuestion(currentIdx);
+            currentIdx = idx;
+            showQuestion(currentIdx);
+        }
+
+        function hideQuestion(idx) {
+            document.getElementById('q-' + idx).classList.remove('active');
+            document.getElementById('btn-' + idx).classList.remove('active');
+        }
+
+        function showQuestion(idx) {
+            document.getElementById('q-' + idx).classList.add('active');
+            document.getElementById('btn-' + idx).classList.add('active');
+            
+            document.getElementById('prevBtn').style.visibility = (idx === 0) ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').style.display = (idx === totalQuestions - 1) ? 'none' : 'flex';
+            document.getElementById('submitBtn').style.display = (idx === totalQuestions - 1) ? 'flex' : 'none';
+        }
+
+        function markAsAnswered(el) {
+            // Highlighting logic
+            const currentSlide = document.getElementById('q-' + currentIdx);
+            currentSlide.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+
+            // Update sidebar palette
+            document.getElementById('btn-' + currentIdx).classList.add('answered');
+        }
+
+        function confirmSubmit() {
+            if(confirm("Are you sure you want to finish the exam? You cannot change your answers after this.")) {
+                document.getElementById('examForm').submit();
+            }
+        }
+
+        let timeInSeconds = 10 * 60;
+        const timerDisplay = document.getElementById('timer');
+        const countdown = setInterval(() => {
+            let mins = Math.floor(timeInSeconds / 60);
+            let secs = timeInSeconds % 60;
+            timerDisplay.innerHTML = (mins < 10 ? '0' : '') + mins + ":" + (secs < 10 ? '0' : '') + secs;
+            if (timeInSeconds <= 0) {
+                clearInterval(countdown);
+                document.getElementById('examForm').submit();
+            }
+            timeInSeconds--;
+        }, 1000);
+    </script>
+</body>
+</html>

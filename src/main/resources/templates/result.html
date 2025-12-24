@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Exam Result - GBC University</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f9; 
+            margin: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+        }
+
+        .result-container {
+            background: white;
+            width: 450px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Header Style based on PASS/FAIL */
+        .result-header {
+            padding: 40px 20px;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .pass-header { background: linear-gradient(135deg, #2e7d32, #4caf50); }
+        .fail-header { background: linear-gradient(135deg, #d32f2f, #f44336); }
+
+        .icon-circle {
+            font-size: 60px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Score Details */
+        .score-body {
+            padding: 30px;
+            color: #333;
+        }
+
+        .main-score {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .percentage-text {
+            font-size: 48px;
+            font-weight: 800;
+            margin: 10px 0;
+            color: #222;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .stat-box {
+            text-align: center;
+        }
+
+        .stat-val {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-lbl {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        /* Footer Buttons */
+        .action-footer {
+            padding: 20px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-dashboard {
+            background-color: #2b59ff;
+            color: white;
+        }
+
+        .btn-logout {
+            background-color: #333;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="result-container">
+        <!-- Pass/Fail Dynamic Header -->
+        <div class="result-header" th:classappend="${status == 'PASS' ? 'pass-header' : 'fail-header'}">
+            <span class="icon-circle">
+                <i th:class="${status == 'PASS' ? 'fas fa-check-circle' : 'fas fa-times-circle'}"></i>
+            </span>
+            <span th:text="${status}">PASS</span>
+        </div>
+
+        <div class="score-body">
+            <div class="main-score">Your Final Score</div>
+            <div class="percentage-text" th:text="${percentage} + '%'">70%</div>
+            <div style="color: #888;">Exam Category: <b th:text="${category}">Java</b></div>
+
+            <!-- Detailed Stats -->
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <span class="stat-val" th:text="${correct} + '/' + ${total}">7/10</span>
+                    <span class="stat-lbl">Correct</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val" th:text="${incorrect}">2</span>
+                    <span class="stat-lbl">Wrong</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-val" th:text="${skipped}">1</span>
+                    <span class="stat-lbl">Skipped</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout and Dashboard Buttons at the bottom -->
+        <div class="action-footer">
+            <a href="/dashboard" class="btn btn-dashboard">
+                <i class="fas fa-th-large"></i> Back to Dashboard
+            </a>
+            <a href="/logout" class="btn btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout from Portal
+            </a>
+        </div>
+    </div>
+
+    <p style="margin-top: 20px; color: #aaa; font-size: 12px;">&copy; 2025 GBC University Examination System</p>
+
+</body>
+</html>
