@@ -58,7 +58,15 @@ public class ExamController {
     @GetMapping("/exam/{category}")
     public String startExam(@PathVariable String category, Model model, HttpSession session) {
         if (session.getAttribute("user") == null) return "redirect:/";
-        List<Question> questions = questionRepository.findByCategory(category);
+
+        // IMPORTANT UPDATE: Use IgnoreCase for reliable cloud searching
+        List<Question> questions = questionRepository.findByCategoryIgnoreCase(category);
+        
+        // DEBUG LOGS: Check Render "Logs" tab to see these values
+        System.out.println("--- Exam Start Debug ---");
+        System.out.println("Requested Category: " + category);
+        System.out.println("Questions Found in DB: " + (questions != null ? questions.size() : 0));
+
         model.addAttribute("questions", questions);
         model.addAttribute("category", category);
         return "exam";
@@ -68,20 +76,18 @@ public class ExamController {
     public String submitExam(@RequestParam Map<String, String> allParams, Model model, HttpSession session) {
         if (session.getAttribute("user") == null) return "redirect:/";
 
-        // 1. Identify which category was being tested (hidden field from exam.html)
         String category = allParams.get("category");
         if (category == null) {
             return "redirect:/dashboard";
         }
         
-        // 2. Fetch questions for that category
-        List<Question> questions = questionRepository.findByCategory(category);
+        // IMPORTANT UPDATE: Use IgnoreCase here as well
+        List<Question> questions = questionRepository.findByCategoryIgnoreCase(category);
         
         int totalQuestions = questions.size();
         int correct = 0;
         int answeredCount = 0;
 
-        // 3. Loop through questions and check answers
         for (Question q : questions) {
             String submittedAnswer = allParams.get("question_" + q.getId());
             
@@ -93,19 +99,16 @@ public class ExamController {
             }
         }
 
-        // 4. Calculate detailed statistics
         int incorrect = answeredCount - correct;
         int skipped = totalQuestions - answeredCount;
         double percentage = (totalQuestions > 0) ? ((double) correct / totalQuestions) * 100 : 0;
         
-        // Pass if 50% or more
         String status = (percentage >= 50.0) ? "PASS" : "FAIL";
 
-        // 5. Add attributes to Model (Compatible with result.html)
         model.addAttribute("status", status);
         model.addAttribute("percentage", String.format("%.1f", percentage));
-        model.addAttribute("score", correct); // Compatibility for simple result page
-        model.addAttribute("correct", correct); // Used in professional result page
+        model.addAttribute("score", correct); 
+        model.addAttribute("correct", correct); 
         model.addAttribute("total", totalQuestions);
         model.addAttribute("incorrect", incorrect);
         model.addAttribute("skipped", skipped);
